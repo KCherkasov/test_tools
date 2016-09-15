@@ -16,6 +16,8 @@ enum LogResponses { LR_SUCCESS, LR_NOT_OPENED, LR_CANT_WRITE, LR_CANT_OPEN, LR_B
 enum BadNamexts { BN_EMPTY, BN_ZERO, BN_PREV_DIR, BN_CURR_DIR, BN_SIZE };
 
 const char* BASE_EXT = ".log";
+const char* OK_MSG = "OK. ";
+const char* FAIL_MSG = "Test failed. ";
 
 class Logger {
   public:
@@ -23,6 +25,7 @@ class Logger {
     ~Logger() {}
     static size_t open_log(const char* fname, const char* ext = BASE_EXT);
     static size_t close_log();
+    static size_t is_open() { return _file.is_open(); }
     template <class T> static size_t write(const T& message);
   protected:
     static std::ofstream _file;
@@ -59,8 +62,28 @@ template <class T>
 size_t Tester::test(const T& lhs, const T& rhs, const size_t& check_value) {
   size_t result = Tester::compare(lhs, rhs);
   if (result == check_value) {
+    printf(OK_MSG);
+    printf("Required result: %d, comparison result: %d.\n", check_value, result);
+    if (Logger::is_open()) {
+      Logger::write<const char*>(OK_MSG);
+      Logger::write<const char*>("Required result: ");
+      Logger::write<size_t>(check_value);
+      Logger::write<const char*>(", comparison result: ");
+      Logger::write<size_t>(result);
+      Logger::write<const char*>(".\n");
+    }   
     return TR_SUCCESS;
   } else {
+    printf(FAIL_MSG);
+    printf("Required result: %d, comparison result: %d.\n", check_value, result);
+    if (Logger::is_open()) {
+      Logger::write<const char*>(FAIL_MSG);
+      Logger::write<const char*>("Required result: ");
+      Logger::write<size_t>(check_value);
+      Logger::write<const char*>(", comparison result: ");
+      Logger::write<size_t>(result);
+      Logger::write<const char*>(".\n");
+    }
     return TR_FAILED;
   }
 }
