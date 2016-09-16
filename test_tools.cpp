@@ -1,6 +1,9 @@
 #include "test_tools.h"
 
 std::ofstream Logger::_file;
+size_t Tester::_total_tests = COUNTER_DEFAULT_VALUE;
+size_t Tester::_success_count = COUNTER_DEFAULT_VALUE;
+size_t Tester::_failed_count = COUNTER_DEFAULT_VALUE;
 
 size_t Logger::open_log(const char* fname, const char* ext) {
   std::vector<std::string> bad_namexts;
