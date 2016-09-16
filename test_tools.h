@@ -77,29 +77,38 @@ size_t Tester::compare(const T& lhs, const T& rhs) {
 template <class T>
 size_t Tester::test(const T& lhs, const T& rhs, const size_t& check_value) {
   size_t result = Tester::compare(lhs, rhs);
+  std::vector<std::string> result_names;
+  result_names.clear();
+  result_names.resize(CR_SIZE);
+  for (size_t i = 0; i < result_names.size(); ++i) {
+    result_names[i].clear();
+  }
+  result_names[CR_EQUAL].append("EQUAL");
+  result_names[CR_LESS].append("LESS");
+  result_names[CR_MORE].append("MORE");
   ++_total_tests;
   if (result == check_value) {
     printf(OK_MSG);
-    printf("Required result: %d, comparison result: %d.\n", check_value, result);
+    printf("Required result: %s, comparison result: %s.\n", result_names[check_value].data(), result_names[result].data());
     if (Logger::is_open()) {
       Logger::write<const char*>(OK_MSG);
       Logger::write<const char*>("Required result: ");
-      Logger::write<size_t>(check_value);
+      Logger::write<const char*>(result_names[check_value].data());
       Logger::write<const char*>(", comparison result: ");
-      Logger::write<size_t>(result);
+      Logger::write<const char*>(result_names[result].data());
       Logger::write<const char*>(".\n");
     }
     ++_success_count;
     return TR_SUCCESS;
   } else {
     printf(FAIL_MSG);
-    printf("Required result: %d, comparison result: %d.\n", check_value, result);
+    printf("Required result: %s, comparison result: %s.\n", result_names[check_value].data(), result_names[result].data());
     if (Logger::is_open()) {
       Logger::write<const char*>(FAIL_MSG);
       Logger::write<const char*>("Required result: ");
-      Logger::write<size_t>(check_value);
+      Logger::write<const char*>(result_names[check_value].data());
       Logger::write<const char*>(", comparison result: ");
-      Logger::write<size_t>(result);
+      Logger::write<const char*>(result_names[result].data());
       Logger::write<const char*>(".\n");
     }
     ++_failed_count;
