@@ -37,3 +37,28 @@ size_t Logger::close_log() {
     return LR_NOT_OPENED;
   }
 }
+
+size_t Tester::get_success_percentage() {
+  if (_success_count == COUNTER_DEFAULT_VALUE) {
+    return _success_count;
+  } else {
+    return _total_tests * 100 / _success_count;
+  }
+}
+
+size_t Tester::print_test_data() {
+  size_t percentage = Tester::get_success_percentage();
+  printf("\ntests made: %d, successful: %d, failed: %d, success percentage: %d%%.\n", _total_tests, _success_count, _failed_count, percentage);
+  if (Logger::is_open()) {
+    Logger::write<const char*>("\ntests made: ");
+    Logger::write<size_t>(_total_tests);
+    Logger::write<const char*>(", successful: ");
+    Logger::write<size_t>(_success_count);
+    Logger::write<const char*>(", failed: ");
+    Logger::write<size_t>(_failed_count);
+    Logger::write<const char*>(", success percentage: ");
+    Logger::write<size_t>(percentage);
+    Logger::write<const char*>("%.\n");
+  }
+  return 0;
+}
