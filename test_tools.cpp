@@ -16,11 +16,11 @@ size_t Logger::open_log(const char* fname, const char* ext) {
   bad_namexts[BN_ZERO].append("\0");
   bad_namexts[BN_PREV_DIR].append("..");
   bad_namexts[BN_CURR_DIR].append(".");
-  for (size_t i = 0; i < bad_namexts.size(); ++i) {
+  /* for (size_t i = 0; i < bad_namexts.size(); ++i) {
     if (strcmp(fname, bad_namexts[i].data()) || strcmp(ext, bad_namexts[i].data())) {
       return LR_BAD_NAMEXT;
     }
-  }
+  } */
   if (_file.is_open()) {
     _file.close();
   }

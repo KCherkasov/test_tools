@@ -17,17 +17,11 @@ enum BadNamexts { BN_EMPTY, BN_ZERO, BN_PREV_DIR, BN_CURR_DIR, BN_SIZE };
 
 const size_t COUNTER_DEFAULT_VALUE = 0;
 
-const char* BASE_EXT = ".log";
-const char* OK_MSG = "OK. ";
-const char* FAIL_MSG = "Test failed. ";
-const char* TEST_SMALL_SEPARATOR = "\n<< ---------------------------------------------------------------------- >>\n";
-const char* TEST_BIG_SEPARATOR = "\n<< ====================================================================== >>\n";
-
 class Logger {
   public:
     Logger() {}
     ~Logger() {}
-    static size_t open_log(const char* fname, const char* ext = BASE_EXT);
+    static size_t open_log(const char* fname, const char* ext = ".log");
     static size_t close_log();
     static size_t is_open() { return _file.is_open(); }
     template <class T> static size_t write(const T& message);
@@ -47,16 +41,17 @@ size_t Logger::write(const T& message) {
 class Tester {
   public:
     template <class T> static size_t compare(const T& lhs, const T& rhs);
-    template <class T> static size_t test(const T& lhs, const T& rhs, const size_t& check_value);
-    static size_t reset_counter() { _total_tests = COUNTER_DEFAULT_VALUE; return 0; }
-    static size_t reset_success() { _success_count = COUNTER_DEFAULT_VALUE; return 0; }
-    static size_t reset_failed() { _failed_count = COUNTER_DEFAULT_VALUE; return 0; }
+    template <class T> static size_t test(const T& lhs, const T& rhs, const size_t& check_value = CR_EQUAL);
+    static size_t reset() { reset_counter(); reset_success(); reset_failed(); return 0; }
     static size_t get_total_tests() { return _total_tests; }
     static size_t get_success_count() { return _success_count; }
     static size_t get_failed_count() { return _failed_count; }
     static size_t get_success_percentage();
     static size_t print_test_data();
   protected:
+    static size_t reset_counter() { _total_tests = COUNTER_DEFAULT_VALUE; return 0; }
+    static size_t reset_success() { _success_count = COUNTER_DEFAULT_VALUE; return 0; }
+    static size_t reset_failed() { _failed_count = COUNTER_DEFAULT_VALUE; return 0; }
     static size_t _total_tests;
     static size_t _success_count;
     static size_t _failed_count;
@@ -76,6 +71,8 @@ size_t Tester::compare(const T& lhs, const T& rhs) {
 
 template <class T>
 size_t Tester::test(const T& lhs, const T& rhs, const size_t& check_value) {
+  const char* OK_MSG = "OK. ";
+  const char* FAIL_MSG = "Test failed. ";
   size_t result = Tester::compare(lhs, rhs);
   std::vector<std::string> result_names;
   result_names.clear();
